@@ -160,16 +160,16 @@ public class Model {
                     }
                 }
                 else if(i>0&&i<getBoard().size()-1&&j>0&&j<getBoard().size()-1){
-                    if(tile(i,j).value()==tile(i+1,j).value()) {
+                    if(tile(i+1,j)!=null&&tile(i,j).value()==tile(i+1,j).value()) {
                         return true;
                     }
-                    else if(tile(i,j).value()==tile(i-1,j).value()) {
+                    else if(tile(i-1,j)!=null&&tile(i,j).value()==tile(i-1,j).value()) {
                         return true;
                     }
-                    else if(tile(i,j).value()==tile(i,j+1).value()) {
+                    else if(tile(i,j+1)!=null&&tile(i,j).value()==tile(i,j+1).value()) {
                         return true;
                     }
-                    else if(tile(i,j).value()==tile(i,j-1).value()) {
+                    else if(tile(i,j-1)!=null&&tile(i,j).value()==tile(i,j-1).value()) {
                         return true;
                     }
                 }
