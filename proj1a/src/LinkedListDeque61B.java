@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class LinkedListDeque61B<T> implements Deque61B<T> {
@@ -22,17 +23,34 @@ public class LinkedListDeque61B<T> implements Deque61B<T> {
 
     @Override
     public void addFirst(T x) {
-        first = new IntNode (x,sentinel,null);
+        if (size==0) {
+            first = new IntNode (x,sentinel,null);
+        } else {
+            for (int i = 0; i < size; i++) {
+                first = new IntNode (x, first, null);
+            }
+        }
+        size++;
     }
-
     @Override
     public void addLast(T x) {
         last = new IntNode (x,last.prev,sentinel);
+        size++;
     }
 
     @Override
     public List<T> toList() {
-        return List.of();
+        List <T> temp = new ArrayList();
+        IntNode node=first;
+        if (size==0) {
+            return List.of();
+        } else {
+            for (int i=0; i < size; i++) {
+                temp.add(node.item);
+                node=node.next;
+            }
+        }
+        return temp;
     }
 
     @Override
