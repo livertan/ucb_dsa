@@ -5,14 +5,17 @@ public class LinkedListDeque61B<T> implements Deque61B<T> {
     private IntNode sentinel, first, last;
     private int size=0;
     public LinkedListDeque61B () {
-        for (int i=0; i<size; i++) {
-            sentinel=sentinel.next;
-            sentinel=sentinel.prev;
+        if (size==0) {
+            sentinel=new IntNode (null, last, first);
+        } else {
+            for (int i = 0; i < size; i++) {
+                sentinel=new IntNode (null,sentinel.prev,sentinel.next);
+            }
         }
     }
     public class IntNode {
         public T item;
-        public IntNode prev,next;
+        public IntNode prev, next;
         public IntNode (T input, IntNode p, IntNode n) {
             item = input;
             prev = p;
@@ -24,10 +27,10 @@ public class LinkedListDeque61B<T> implements Deque61B<T> {
     @Override
     public void addFirst(T x) {
         if (size==0) {
-            first = new IntNode (x,sentinel,null);
+            first = new IntNode (x,sentinel,sentinel);
         } else {
             for (int i = 0; i < size; i++) {
-                first = new IntNode (x, first, null);
+                first = new IntNode (x, first, sentinel);
             }
         }
         size++;
