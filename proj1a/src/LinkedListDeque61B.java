@@ -2,16 +2,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LinkedListDeque61B<T> implements Deque61B<T> {
-    private IntNode sentinel, first, last;
-    private int size=0;
+    public IntNode sentinel, front, back;
+    public int size=0;
     public LinkedListDeque61B () {
-        if (size==0) {
-            sentinel=new IntNode (null, last, first);
-        } else {
-            for (int i = 0; i < size; i++) {
-                sentinel=new IntNode (null,sentinel.prev,sentinel.next);
-            }
-        }
+        sentinel=new IntNode (null, sentinel, sentinel);
+        sentinel.prev=sentinel;
+        sentinel.next=sentinel;
     }
     public class IntNode {
         public T item;
@@ -26,31 +22,47 @@ public class LinkedListDeque61B<T> implements Deque61B<T> {
 
     @Override
     public void addFirst(T x) {
-        if (size==0) {
-            first = new IntNode (x,sentinel,sentinel);
+        if (size == 0) {
+            front = new IntNode (x, sentinel, sentinel);
+            sentinel.next = front;
+            sentinel.prev = front;
+            size++;
         } else {
-            for (int i = 0; i < size; i++) {
-                first = new IntNode (x, first, sentinel);
-            }
+            back = sentinel.next;
+            front = new IntNode (x, sentinel, back);
+            sentinel.next = front;
+            back.prev = front;
+            size++;
         }
-        size++;
     }
     @Override
     public void addLast(T x) {
-        last = new IntNode (x,last.prev,sentinel);
-        size++;
+        if (size == 0) {
+            back = new IntNode (x, sentinel, sentinel);
+            sentinel.next = back;
+            sentinel.prev = back;
+            size++;
+        } else {
+            front = sentinel.prev;
+            back = new IntNode (x, front, sentinel);
+            front.next = back;
+            sentinel.prev = back;
+            size++;
+        }
     }
 
     @Override
     public List<T> toList() {
         List <T> temp = new ArrayList();
-        IntNode node=first;
-        if (size==0) {
-            return List.of();
-        } else {
-            for (int i=0; i < size; i++) {
-                temp.add(node.item);
-                node=node.next;
+        IntNode node = sentinel.next;
+        if (node != null) {
+            if (size == 0) {
+                return List.of();
+            } else {
+                for (int i = 0; i < size; i++) {
+                    temp.add (node.item);
+                    node = node.next;
+                }
             }
         }
         return temp;
