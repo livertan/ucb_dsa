@@ -46,14 +46,14 @@ public interface Deque61B<T> {
      *
      * @return removed element, otherwise {@code null}.
      */
-    T removeFirst();
+    void removeFirst();
 
     /**
      * Remove and return the element at the back of the deque, if it exists.
      *
      * @return removed element, otherwise {@code null}.
      */
-    T removeLast();
+    void removeLast();
 
     /**
      * The Deque61B abstract data type does not typically have a get method,
