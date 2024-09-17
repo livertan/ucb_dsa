@@ -43,13 +43,13 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
     @Override
     public List<T> toList() {
         List<T> temp = new ArrayList <>();
-        if (nextFirst + 1 < nextLast - 1) {
+        if (nextFirst + 1 < First0 && nextFirst + 1 < nextLast - 1) {
             for (int i = nextFirst+1; i < nextLast; i++) {
                 temp.add(items[i]);
             }
         } else {
-                if (nextFirst-1 > First0) {
-                    for (int i = nextFirst-1;i < items.length; i++) {
+                if (nextFirst + 1 > First0 || nextLast - 1 < Last0) {
+                    for (int i = nextFirst+1; i < items.length; i++) {
                         temp.add(items[i]);
                     }
                     for (int i = 0; i < nextLast; i++) {
