@@ -22,6 +22,92 @@ public class ArrayDeque61BTest {
         array.addFirst(9);
         assertThat(array.toList()).containsExactly(9,8,7,-1,1,0,5,6).inOrder();
     }
+    //
+    @Test
+    void isEmptyAndSizeTest() {
+        Deque61B<Integer> array = new ArrayDeque61B();
+        array.addLast(6);
+        array.addFirst(7);
+        array.addFirst(8);
+        array.addFirst(9);
+        assertThat(array.isEmpty()).isEqualTo(false);
+        assertThat(array.size()).isEqualTo(4);
+
+    }
+
+    @Test
+    void getTest() {
+        Deque61B<Integer> array = new ArrayDeque61B();
+        array.addFirst(0);
+        array.addFirst(1);
+        array.addLast(5);
+        array.addFirst(-1);
+        array.addLast(6);
+        array.addFirst(7);
+        array.addFirst(8);
+        assertThat(array.get(4)).isEqualTo(0);
+        array.addFirst(9);
+        assertThat(array.get(0)).isEqualTo(9);
+    }
+
+    @Test
+    void removeFirstAndremoveLastTest() {
+        Deque61B<Integer> array = new ArrayDeque61B();
+        array.addFirst(0);
+        array.addFirst(1);
+        array.addLast(5);
+        array.addFirst(-1);
+        array.addLast(6);
+        array.addFirst(7);
+        array.addFirst(8);
+        array.removeFirst();
+        array.addFirst(9);
+        assertThat(array.toList()).containsExactly(9,7,-1,1,0,5,6).inOrder();
+        array.addLast(10);
+        array.removeLast();
+        assertThat(array.toList()).containsExactly(9,7,-1,1,0,5,6).inOrder();
+        array.addLast(11);
+        assertThat(array.toList()).containsExactly(9,7,-1,1,0,5,6,11).inOrder();
+    }
+
+    @Test
+    void ResizingUpTest() {
+        Deque61B<Integer> array = new ArrayDeque61B();
+        //check items added equally from both ends
+        for (int i = 0; i < 8; i++){
+            array.addFirst(2*i+1);
+            array.addLast(2*i);
+        }
+        assertThat(array.toList()).containsExactly(15,13,11,9,7,5,3,1,0,2,4,6,8,10,12,14).inOrder();
+        array.addFirst(17);
+        array.addLast(16);
+        assertThat(array.toList()).containsExactly(17,15,13,11,9,7,5,3,1,0,2,4,6,8,10,12,14,16).inOrder();
+        //check more items added from starting end
+        Deque61B<Integer> array1 = new ArrayDeque61B();
+        for (int i = 0; i < 6; i++){
+            array1.addFirst(2*i+1);
+        }
+        for (int i = 0; i < 2; i++){
+            array1.addLast(2*i);
+        }
+        assertThat(array1.toList()).containsExactly(11,9,7,5,3,1,0,2).inOrder();
+        array1.addFirst(13);
+        array1.addLast(4);
+        assertThat(array1.toList()).containsExactly(13,11,9,7,5,3,1,0,2,4).inOrder();
+        //check more items added from ending end
+        Deque61B<Integer> array2 = new ArrayDeque61B();
+        for (int i = 0; i < 2; i++){
+            array2.addFirst(2*i+1);
+        }
+        for (int i = 0; i < 6; i++){
+            array2.addLast(2*i);
+        }
+        assertThat(array2.toList()).containsExactly(3,1,0,2,4,6,8,10).inOrder();
+        array2.addFirst(5);
+        array2.addLast(12);
+        assertThat(array2.toList()).containsExactly(5,3,1,0,2,4,6,8,10,12).inOrder();
+        //
+    }
 
 //     @Test
 //     @DisplayName("ArrayDeque61B has no fields besides backing array and primitives")
