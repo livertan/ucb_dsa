@@ -17,7 +17,7 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
     public void ResizingUp(int ResizeFactor) {
         T[] a ;
         a = (T[]) new Object [items.length * ResizeFactor];
-        if (nextFirst + 1 < First0 && nextFirst + 1 < nextLast - 1) {
+        if (nextFirst + 1 <= First0 && nextFirst + 1 < nextLast - 1) {
             for (int i = nextFirst+1; i < nextLast; i++) {
                 a[i] = items[i];
             }
@@ -41,6 +41,33 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
             }
         }
         items = a;
+    }
+
+    public void ResizingDown() {
+        T[] b;
+        b = (T[]) new Object [size];
+        int j = 0;
+        if (nextFirst + 1 < nextLast - 1) {
+                for (int i = nextFirst + 1; i < nextLast; i++) {
+                    b[j] = items[i];
+                    j++;
+                }
+                nextFirst = -1;
+                nextLast = b.length;
+                items = b;
+        } else if (nextFirst + 1 > nextLast - 1 ) {
+                for (int i = nextFirst + 1; i < items.length; i++) {
+                    b[j] = items[i];
+                    j++;
+                }
+                for (int i = 0; i < nextLast; i++) {
+                    b[j] = items[i];
+                    j++;
+                }
+                nextFirst = -1;
+                nextLast = b.length;
+                items = b;
+        }
     }
 
     @Override
@@ -72,20 +99,29 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
     @Override
     public List<T> toList() {
         List<T> temp = new ArrayList <>();
-        if (nextFirst + 1 < First0 && nextFirst + 1 < nextLast - 1) {
-            for (int i = nextFirst+1; i < nextLast; i++) {
-                temp.add(items[i]);
+        if (nextFirst + 1 < nextLast - 1) {
+            for (int i = nextFirst + 1; i < nextLast; i++) {
+                if (items[i] != null) {
+                    temp.add(items[i]);
+                }
             }
+            return temp;
         } else {
-                if (nextFirst + 1 > First0 || nextLast - 1 < Last0) {
+                if (nextFirst + 1 > nextLast - 1) {
                     for (int i = nextFirst+1; i < items.length; i++) {
-                        temp.add(items[i]);
+                        if (items[i] != null) {
+                            temp.add(items[i]);
+                        }
                     }
                     for (int i = 0; i < nextLast; i++) {
-                        temp.add(items[i]);
+                        if (items[i] != null) {
+                            temp.add(items[i]);
+                        }
                     }
-            }
+                    return temp;
+                }
         }
+        temp.add(items[nextFirst+1]);
         return temp;
     }
 //
@@ -105,28 +141,32 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
 
     @Override
     public T removeFirst() {
+        if (items.length > 16 && (double) size/(double)items.length <= 0.25) {
+            ResizingDown();
+        }
         T temp;
+        if (nextFirst + 1 > items.length - 1) {
+            nextFirst = -1;
+        }
         temp = items[nextFirst+1];
         items[nextFirst + 1] = null;
-        if (nextFirst + 1 > items.length - 1) {
-            nextFirst = 0;
-        } else {
-            nextFirst++;
-        }
+        nextFirst++;
         size--;
         return temp;
     }
 
     @Override
     public T removeLast() {
+        if (items.length > 16 && (double) size/(double)items.length <= 0.25) {
+            ResizingDown();
+        }
         T temp;
+        if (nextLast - 1 < 0) {
+            nextLast = items.length;
+        }
         temp = items[nextLast - 1];
         items[nextLast - 1] = null;
-        if (nextLast - 1 < 0) {
-            nextLast = 0;
-        } else {
-            nextLast--;
-        }
+        nextLast--;
         size--;
         return temp;
     }
@@ -136,7 +176,7 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
         if (index >= size) {
             return null;
         }
-        if (nextFirst + 1 < First0 && nextFirst + 1 < nextLast - 1) {
+        if (nextFirst + 1 <= First0 && nextFirst + 1 < nextLast - 1) {
             return items[index - (nextFirst+1)];
         } else if (nextFirst + 1 > First0 || nextLast - 1 < Last0) {
             if (index<=items.length-(nextFirst+1)){

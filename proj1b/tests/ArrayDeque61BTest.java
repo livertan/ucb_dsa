@@ -61,13 +61,52 @@ public class ArrayDeque61BTest {
         array.addFirst(7);
         array.addFirst(8);
         array.removeFirst();
-        array.addFirst(9);
-        assertThat(array.toList()).containsExactly(9,7,-1,1,0,5,6).inOrder();
-        array.addLast(10);
+        assertThat(array.toList()).containsExactly(7,-1,1,0,5,6).inOrder();
         array.removeLast();
-        assertThat(array.toList()).containsExactly(9,7,-1,1,0,5,6).inOrder();
+        assertThat(array.toList()).containsExactly(7,-1,1,0,5).inOrder();
         array.addLast(11);
-        assertThat(array.toList()).containsExactly(9,7,-1,1,0,5,6,11).inOrder();
+        assertThat(array.toList()).containsExactly(7,-1,1,0,5,11).inOrder();
+        //
+        Deque61B<Integer> array1 = new ArrayDeque61B();
+        //check items added equally from both ends
+        for (int i = 0; i < 24; i++) {
+            array1.addFirst(2*i+1);
+            array1.addLast(2*i);
+        }
+        for (int i = 0; i < 23; i++) {
+            array1.removeFirst();
+            array1.removeLast();
+        }
+        assertThat(array1.toList()).containsExactly(1,0).inOrder();
+        //
+        //check more items added from ending end
+        Deque61B<Integer> array2 = new ArrayDeque61B();
+        for (int i = 0; i < 12; i++){
+            array2.addFirst(2*i+1);
+        }
+        for (int i = 0; i < 36; i++){
+            array2.addLast(2*i);
+        }
+        for (int i = 0; i < 47; i++) {
+            array2.removeFirst();
+            //array2.removeLast();
+        }
+        assertThat(array2.toList()).containsExactly(70).inOrder();
+        //
+        //check more items added from ending end
+        Deque61B<Integer> array3 = new ArrayDeque61B();
+        for (int i = 0; i < 36; i++){
+            array3.addFirst(2*i+1);
+        }
+        for (int i = 0; i < 12; i++){
+            array3.addLast(2*i);
+        }
+        for (int i = 0; i < 47; i++) {
+            //array3.removeFirst();
+            array3.removeLast();
+        }
+        assertThat(array3.toList()).containsExactly(71).inOrder();
+
     }
 
     @Test
