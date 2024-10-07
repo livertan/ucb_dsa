@@ -5,10 +5,10 @@ import java.util.Iterator;
 import java.util.List;
 
 public class ArrayDeque61B<T> implements Deque61B<T> {
-    private T[] items;
-    private int size;
-    private int nextFirst, nextLast;
-    private int First0 = 3,Last0 = 4;//initial position of first and last.
+    protected T[] items;
+    protected int size;
+    protected int nextFirst, nextLast;
+    protected int First0 = 3, Last0 = 4;//initial position of first and last.
 
     public ArrayDeque61B () {
         items = (T[]) new Object [8];
