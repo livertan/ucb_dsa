@@ -179,13 +179,13 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
         if (index >= size) {
             return null;
         }
-        if (nextFirst + 1 <= First0 && nextFirst + 1 < nextLast - 1) {
-            return items[index - (nextFirst+1)];
-        } else if (nextFirst + 1 > First0 || nextLast - 1 < Last0) {
-            if (index<=items.length-(nextFirst+1)){
-                return items[nextFirst+1+index];
+        if (nextFirst + 1  < nextLast - 1) {
+            return items[(nextFirst + 1) + index];
+        } else if (nextFirst + 1 > nextLast - 1 ) {
+            if (index + (nextFirst + 1) < items.length){
+                return items[nextFirst + 1 + index];
             } else {
-                return items[index - (items.length-(nextFirst+1))];
+                return items[index + (nextFirst + 1)- items.length];
             }
         } else {
             return null;
