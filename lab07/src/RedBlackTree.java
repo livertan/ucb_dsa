@@ -51,6 +51,14 @@ public class RedBlackTree<T extends Comparable<T>> {
      */
     void flipColors(RBTreeNode<T> node) {
         // TODO: YOUR CODE HERE
+        boolean color = node.isBlack;
+        node.isBlack = !color;
+        if (node.left != null) {
+            node.left.isBlack = color;
+        }
+        if (node.right != null) {
+            node.right.isBlack = color;
+        }
     }
 
     /**
@@ -62,7 +70,11 @@ public class RedBlackTree<T extends Comparable<T>> {
      */
     RBTreeNode<T> rotateRight(RBTreeNode<T> node) {
         // TODO: YOUR CODE HERE
-        return null;
+        RBTreeNode<T> returnRoot;
+        flipColors(node);
+        returnRoot = node.left;
+        returnRoot.right = node;
+        return returnRoot;
     }
 
     /**
@@ -74,7 +86,11 @@ public class RedBlackTree<T extends Comparable<T>> {
      */
     RBTreeNode<T> rotateLeft(RBTreeNode<T> node) {
         // TODO: YOUR CODE HERE
-        return null;
+        RBTreeNode<T> returnRoot;
+        flipColors(node);
+        returnRoot = node.right;
+        returnRoot.left = node;
+        return returnRoot;
     }
 
     /**
@@ -106,9 +122,19 @@ public class RedBlackTree<T extends Comparable<T>> {
      */
     private RBTreeNode<T> insert(RBTreeNode<T> node, T item) {
         // TODO: Insert (return) new red leaf node.
+        node.isBlack = false;
+        node.item = item;
 
         // TODO: Handle normal binary search tree insertion.
-
+        if (node == null) {
+            return new RBTreeNode<>(true, item, null, null );
+        } else if (item.compareTo(node.item) < 0) {
+            return insert(node.left, item);
+        } else if (item.compareTo(node.item) > 0) {
+            return insert(node.left, item);
+        } else if (item.compareTo(node.item) == 0) {
+            return node;
+        }
         // TODO: Rotate left operation
 
         // TODO: Rotate right operation
