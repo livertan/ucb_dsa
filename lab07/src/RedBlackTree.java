@@ -138,7 +138,7 @@ public class RedBlackTree<T extends Comparable<T>> {
             return node;
         }
         // TODO: Rotate left operation
-        if (node.left == null || node.left.isBlack) {
+        if (node.left == null) {
             if (isRed(node.right)) {
                 node = rotateLeft(node);
                 return node;
