@@ -1,9 +1,6 @@
 package hashmap;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Set;
+import java.util.*;
 
 /**
  *  A hash table-backed Map implementation.
@@ -30,22 +27,40 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     /* Instance Variables */
     int N = 0;
     int M = 16;
-    double LF = 1.0;
+    double LF = 0.75;
 
     private Collection<Node>[] buckets;
     // You should probably define some more!
 
     /** Constructors */
     public MyHashMap() {
-        if (1.0 * N / M < LF) {
-            buckets = new Collection[M];
-        } else {
-            buckets = new Collection[(int)(2 * M)];
+        buckets = new Collection[M];
+    }
+
+    public void resize() {
+        Collection<Node>[] temp;
+        if (1.0 * N / M > LF) {
+            M = 2 * M;
+            temp = new Collection[M];
+            for (Collection<Node> bucket : buckets) {
+                if (bucket == null) {
+                    continue;
+                }
+                for (Node node : bucket) {
+                    int i = Math.floorMod(node.key.hashCode(), M);
+                    if (temp[i] == null) {
+                        temp[i] = this.createBucket();
+                    }
+                    temp[i].add(node);
+                }
+            }
+            buckets = temp;
         }
     }
 
     public MyHashMap(int initialCapacity) {
-        buckets = new Collection[initialCapacity];
+        M = initialCapacity;
+        buckets = new Collection[M];
     }
 
     /**
@@ -57,11 +72,8 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
      */
     public MyHashMap(int initialCapacity, double loadFactor) {
         M = initialCapacity;
-        if (N / M <= loadFactor) {
-            buckets = new Collection[M];
-        } else {
-            buckets = new Collection[2 * M];
-        }
+        LF = loadFactor;
+        buckets = new Collection[M];
     }
 
     /**
@@ -108,6 +120,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
         }
         buckets[i].add(newNode);
         N = N + 1;
+        this.resize();
     }
 
     @Override
@@ -148,6 +161,9 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     @Override
     public void clear() {
         for (int i = 0; i < M; i++) {
+            if (buckets[i] == null) {
+                continue;
+            }
             buckets[i].clear();
         }
         N = 0;
