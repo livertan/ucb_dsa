@@ -86,8 +86,10 @@ public class WordGraph {
         List<String> words;
         for (Map.Entry<Integer, List<String>> entry : map.entrySet()) {
             words = entry.getValue();
-            if (words.get(0).equals(value)) {
-                keys.add((K) entry.getKey());
+            for (int i = 0; i < words.size(); i++) {
+                if (words.get(i).equals(value)) {
+                    keys.add((K) entry.getKey());
+                }
             }
         }
         return keys;

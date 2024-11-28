@@ -24,11 +24,11 @@ public class HyponymsHandler extends NgordnetQueryHandler {
         String response;
 
         for (String word : words) {
-            output = (List<String>) wordnet.hyponyms(word);
+            temp = (List<String>) wordnet.hyponyms(word);
             if (output.isEmpty()) {
                 output = temp;
             } else {
-                new HashSet<>(output).containsAll(temp);
+                output.retainAll(temp);
             }
         }
         response = "[" + String.join(", ", output) + "]";

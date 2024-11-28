@@ -4,6 +4,8 @@ import browser.NgordnetQueryType;
 import org.junit.jupiter.api.Test;
 import main.AutograderBuddy;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -29,4 +31,17 @@ public class TestOneWordK0Hyponyms {
     }
 
     // TODO: Add more unit tests (including edge case tests) here.
+    @Test
+    public void testOccurrenceK0() {
+        NgordnetQueryHandler studentHandler = AutograderBuddy.getHyponymsHandler(
+                WORDS_FILE, TOTAL_COUNTS_FILE, SMALL_SYNSET_FILE, SMALL_HYPONYM_FILE);
+        List<String> words = List.of("occurrence");
+
+        NgordnetQuery nq = new NgordnetQuery(words, 0, 0, 0, NgordnetQueryType.HYPONYMS);
+        String actual = studentHandler.handle(nq);
+        String expected  = "[adjustment, alteration, change, conversion, happening, increase, jump, leap, " +
+                "modification, mutation, natural_event, occurrence, occurrent, saltation, " +
+                "transition]";
+        assertThat(actual).isEqualTo(expected);
+    }
 }
