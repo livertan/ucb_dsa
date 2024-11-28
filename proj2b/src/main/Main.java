@@ -11,8 +11,8 @@ public class Main {
     public static void main(String[] args) {
         NgordnetServer hns = new NgordnetServer();
 
-        String synsetFile = "./data/wordnet/synsets11.txt";
-        String hyponymFile = "./data/wordnet/hyponyms11.txt";
+        String synsetFile = "./data/wordnet/synsets.txt";
+        String hyponymFile = "./data/wordnet/hyponyms.txt";
 
         WordGraph wn = new WordGraph(synsetFile, hyponymFile);
 
