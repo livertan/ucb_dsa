@@ -12,21 +12,16 @@ public class WordGraph {
     //
     public WordGraph(String synsetsFilename, String hyponymsFilename) {
         In in = new In(synsetsFilename);
-        List temp = new ArrayList();
-        int NoOfWord = 0, NoOfEdge = 0;
+        List<String> temp = new ArrayList<>();
+        int NoOfWord = 0;
+        int NoOfEdge = 0;
         while (!in.isEmpty() && in.hasNextLine()) {
             String nextLine = in.readLine();
             String[] splitLine = nextLine.split(",");
-            if (synsets.containsKey(splitLine[0])) {
-                temp.addAll(synsets.get(splitLine[0]));
-                Collections.addAll(temp, splitLine[1].split("\t"));
-                synsets.put(Integer.parseInt(splitLine[0]),temp);
-                temp = new ArrayList();
-            } else {
-                Collections.addAll(temp, splitLine[1].split("\t"));
-                synsets.put(Integer.parseInt(splitLine[0]),temp);
-                temp = new ArrayList();
-            }
+            String[] words = splitLine[1].split(" ");
+            temp.addAll(List.of(words));
+            synsets.put(Integer.parseInt(splitLine[0]),temp);
+            temp = new ArrayList<>();
             NoOfWord++;
         }
         in.close();
@@ -51,7 +46,7 @@ public class WordGraph {
     //
     public void addEdge(int v, int w) {
         adj[v].add(w);
-        adj[w].add(v);
+        //adj[w].add(v);
     }
     //
     public Iterable<Integer> adj(int v) {
@@ -64,19 +59,29 @@ public class WordGraph {
     //
     public Iterable<String> hyponyms(String word) {
         List<String> hypoList = new ArrayList<>();
-        List<Integer> keys = new ArrayList();
+        List<Integer> keys = new ArrayList<>();
         List<Integer> hypoKeys = new ArrayList<>();
-        keys = (getKeyByValue(this.synsets, word));
-        for (int key : keys) {
-            hypoKeys.addAll(adj[key]);
+        keys = getKeyByValue(this.synsets, word);
+        for (int WordKey : keys) {
+            for (int key: this.synsets.keySet()) {
+                DepthFirstPaths path = new DepthFirstPaths(this, WordKey);
+                if (path.hasPathTo(key)) {
+                    hypoKeys.add(key);
+                }
+            }
         }
+        //
         for (int key: hypoKeys) {
             hypoList.addAll(this.synsets.get(key));
         }
+        Set<String> set = new HashSet<>(hypoList);
+        hypoList.clear();
+        hypoList.addAll(set);
+        Collections.sort(hypoList);
         return hypoList;
     }
     //
-    public static <K, V> List<K> getKeyByValue(Map<Integer, List<String>> map, String value) {
+    private static <K, V> List<K> getKeyByValue(Map<Integer, List<String>> map, String value) {
         List<K> keys = new ArrayList<>();
         List<String> words;
         for (Map.Entry<Integer, List<String>> entry : map.entrySet()) {

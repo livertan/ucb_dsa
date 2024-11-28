@@ -1,10 +1,37 @@
 package main;
 import browser.NgordnetQuery;
 import browser.NgordnetQueryHandler;
+import wordnet.WordGraph;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 public class HyponymsHandler extends NgordnetQueryHandler {
+    WordGraph wordnet;
+    //
+    public HyponymsHandler (WordGraph graph) {
+        wordnet = graph;
+    }
     @Override
     public String handle(NgordnetQuery q) {
-        return "Hello World!";
+        List<String> words = q.words();
+        int startYear = q.startYear();
+        int endYear = q.endYear();
+
+        List<String> temp = new ArrayList<String>();
+        List<String> output = new ArrayList<String>();
+        String response;
+
+        for (String word : words) {
+            output = (List<String>) wordnet.hyponyms(word);
+            if (output.isEmpty()) {
+                output = temp;
+            } else {
+                new HashSet<>(output).containsAll(temp);
+            }
+        }
+        response = "[" + String.join(", ", output) + "]";
+        return response;
     }
 }
