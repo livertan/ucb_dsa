@@ -46,6 +46,7 @@ public class NGramMap {
             } else {
                 temp.put(Integer.parseInt(splitLine[1]), Double.parseDouble(splitLine[2]));
                 words.put(splitLine[0],temp);
+                temp = new TimeSeries();
             }
         }
         in.close();
@@ -69,8 +70,9 @@ public class NGramMap {
      */
     public TimeSeries countHistory(String word, int startYear, int endYear) {
         // TODO: Fill in this method.
+        TimeSeries result = new TimeSeries();
         if (!words.containsKey(word)) {
-            throw new IllegalArgumentException("Word not included in database!");
+            return result;
         } else {
             return new TimeSeries(words.get(word), startYear, endYear);
         }

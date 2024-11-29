@@ -36,10 +36,18 @@ public class HyponymsHandler extends NgordnetQueryHandler {
                 output = temp;
             } else {
                 output.retainAll(temp);
-            };
+            }
+        }
+        //
+        if (k == 0) {
+            response = "[" + String.join(", ", output) + "]";
+            return response;
         }
         //
         for (String word : output) {
+            if (history.countHistory(word, startYear, endYear).isEmpty()) {
+                continue;
+            }
             word_history = history.countHistory(word, startYear, endYear);
             for (double count : word_history.data()) {
                 totalCounts = totalCounts + count;
@@ -48,11 +56,23 @@ public class HyponymsHandler extends NgordnetQueryHandler {
             totalCounts = 0;
         }
         //
-        Map<String, Double> hm1 = sortByValue(wordCounts);
+        Map<String, Double> hm1 = sortByValue(wordCounts);// sort by reversed order
         //
-        int i = 1;
-        response = "[";
+        List<String> results = new ArrayList<>();
+        //
+        int i = 0;
         for (String word : hm1.keySet()) {
+            if (i >= k) {
+                break;
+            }
+            results.add(word);
+            i++;
+        }
+        //
+        results.sort(null);
+        response = "[";
+        i = 1;
+        for (String word : results) {
             if (i < k) {
                 response = response + word + ", ";
                 i++;
@@ -69,7 +89,7 @@ public class HyponymsHandler extends NgordnetQueryHandler {
     //
     public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
         List<Map.Entry<K, V>> entries = new ArrayList<>(map.entrySet());
-        entries.sort(Map.Entry.comparingByValue());
+        entries.sort(Map.Entry.<K, V>comparingByValue().reversed());
 
         Map<K, V> sortedMap = new LinkedHashMap<>();
         for (Map.Entry<K, V> entry : entries) {
