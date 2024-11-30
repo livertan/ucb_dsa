@@ -95,4 +95,27 @@ public class WordGraph {
         return keys;
     }
     //
+    public Iterable<String> ancestors(String word) {
+        List<String> anceList = new ArrayList<>();
+        List<Integer> keys = new ArrayList<>();
+        List<Integer> anceKeys = new ArrayList<>();
+        keys = getKeyByValue(this.synsets, word);
+        for (int WordKey : keys) {
+            for (int key: this.synsets.keySet()) {
+                DepthFirstPaths path = new DepthFirstPaths(this, key);
+                if (path.hasPathTo(WordKey)) {
+                    anceKeys.add(key);
+                }
+            }
+        }
+        //
+        for (int key: anceKeys) {
+            anceList.addAll(this.synsets.get(key));
+        }
+        Set<String> set = new HashSet<>(anceList);
+        anceList.clear();
+        anceList.addAll(set);
+        Collections.sort(anceList);
+        return anceList;
+    }
 }

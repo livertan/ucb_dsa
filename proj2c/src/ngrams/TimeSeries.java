@@ -30,7 +30,7 @@ public class TimeSeries extends TreeMap<Integer, Double> {
     public TimeSeries(TimeSeries ts, int startYear, int endYear) {
         super();
         // TODO: Fill in this constructor.
-        SortedMap<Integer, Double> result = new TimeSeries();
+        SortedMap<Integer, Double> result;
         result = ts.subMap(startYear, endYear + 1);
         this.putAll(result);
     }

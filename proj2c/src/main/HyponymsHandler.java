@@ -1,13 +1,14 @@
 package main;
 import browser.NgordnetQuery;
 import browser.NgordnetQueryHandler;
+import browser.NgordnetQueryType;
 import ngrams.NGramMap;
 import ngrams.TimeSeries;
 import wordnet.WordGraph;
 
 import java.util.*;
 
-public class HyponymsHandler extends NgordnetQueryHandler {
+public class  HyponymsHandler extends NgordnetQueryHandler {
     WordGraph wordnet;
     NGramMap history;
     //
@@ -21,6 +22,7 @@ public class HyponymsHandler extends NgordnetQueryHandler {
         int startYear = q.startYear();
         int endYear = q.endYear();
         int k = q.k();
+        NgordnetQueryType Type = q.ngordnetQueryType();
 
         TimeSeries word_history;
 
@@ -31,7 +33,12 @@ public class HyponymsHandler extends NgordnetQueryHandler {
         String response;
 
         for (String word : words) {
-            temp = (List<String>) wordnet.hyponyms(word);
+            if (Type == NgordnetQueryType.ANCESTORS) {
+                temp = (List<String>) wordnet.ancestors(word);
+            } else {
+                temp = (List<String>) wordnet.hyponyms(word);
+            }
+            //
             if (output.isEmpty()) {
                 output = temp;
             } else {

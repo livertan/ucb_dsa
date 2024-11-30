@@ -32,6 +32,28 @@ public class TestCommonAncestors {
     }
 
     // TODO: Add more unit tests (including edge case tests) here.
+    @Test
+    public void testAncestorChangeAdjustment() {
+        NgordnetQueryHandler studentHandler = AutograderBuddy.getHyponymsHandler(
+                WORDS_FILE, TOTAL_COUNTS_FILE, SMALL_SYNSET_FILE, SMALL_HYPONYM_FILE);
+        List<String> words = List.of("change","adjustment");
+
+        NgordnetQuery nq = new NgordnetQuery(words, 2000, 2020, 0, NgordnetQueryType.ANCESTORS);
+        String actual = studentHandler.handle(nq);
+        String expected = "[alteration, event, happening, modification, natural_event, occurrence, occurrent]";
+        assertThat(actual).isEqualTo(expected);
+    }
 
     // TODO: Create similar unit test files for the k != 0 cases.
+    @Test
+    public void testAncestorChangeAdjustmentKnot0() {
+        NgordnetQueryHandler studentHandler = AutograderBuddy.getHyponymsHandler(
+                LARGE_WORDS_FILE, TOTAL_COUNTS_FILE, SMALL_SYNSET_FILE, SMALL_HYPONYM_FILE);
+        List<String> words = List.of("change","adjustment");
+
+        NgordnetQuery nq = new NgordnetQuery(words, 2000, 2020, 5, NgordnetQueryType.ANCESTORS);
+        String actual = studentHandler.handle(nq);
+        String expected = "[alteration, event, happening, modification, occurrence]";
+        assertThat(actual).isEqualTo(expected);
+    }
 }
