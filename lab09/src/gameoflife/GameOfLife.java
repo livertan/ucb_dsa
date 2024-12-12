@@ -7,6 +7,7 @@ import tileengine.Tileset;
 import utils.FileUtils;
 
 import java.awt.event.KeyEvent;
+import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -240,6 +241,21 @@ public class GameOfLife {
         // TODO: Implement this method so that the described transitions occur.
         // TODO: The current state is represented by TETiles[][] tiles and the next
         // TODO: state/evolution should be returned in TETile[][] nextGen.
+
+        int liveCounts = 0;
+        int delta = -1;
+
+        for (int x = 1; x < width - 1; x++) {
+            for (int y = 1; y < height - 1; y++) {
+                while (!Objects.equals(tiles[x + delta][y + delta].description(), "NOTHING")) {
+                    liveCounts++;
+                    delta ++;
+                    if (delta > 1) {
+                        break;
+                    }
+                }
+            }
+        }
 
 
 
