@@ -7,6 +7,7 @@ import tileengine.Tileset;
 import utils.FileUtils;
 
 import java.awt.event.KeyEvent;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Random;
 
@@ -216,6 +217,7 @@ public class GameOfLife {
         };
     }
 
+
     /**
      * Returns the current state of the board.
      * @return
@@ -243,25 +245,53 @@ public class GameOfLife {
         // TODO: state/evolution should be returned in TETile[][] nextGen.
 
         int liveCounts = 0;
-        int delta = -1;
+        int deltax, deltay;
+        String tileType = "nothing";
 
-        for (int x = 1; x < width - 1; x++) {
-            for (int y = 1; y < height - 1; y++) {
-                while (!Objects.equals(tiles[x + delta][y + delta].description(), "NOTHING")) {
-                    liveCounts++;
-                    delta ++;
-                    if (delta > 1) {
-                        break;
+        for (int x = 0; x < tiles.length; x++) {
+            for (int y = 0; y < tiles[0].length; y++) {
+                for (deltax = -1; deltax <2; deltax++) {
+                    for (deltay = -1; deltay <2; deltay++) {
+                        if(deltax == 0 && deltay == 0) {
+                            continue;
+                        }
+                        if (x + deltax < 0 || x + deltax >= tiles.length || y + deltay < 0 ||y + deltay >= tiles[0].length) {
+                            continue;
+                        }
+                        if (!Objects.equals(tiles[x + deltax][y + deltay].description(), "nothing")) {
+                            tileType = tiles[x + deltax][y + deltay].description();
+                            liveCounts++;
+                        }
                     }
                 }
+                if (!Objects.equals(tiles[x][y].description(), "nothing")) {
+                    if (liveCounts == 2 || liveCounts == 3 ) {
+                        nextGen[x][y] = tiles[x][y];
+                    }
+                } else {
+                    if (liveCounts == 3) {
+                        switch (tileType) {
+                            case "you" -> nextGen[x][y] = Tileset.AVATAR;
+                            case "wall" -> nextGen[x][y] = Tileset.WALL;
+                            case "floor" -> nextGen[x][y] = Tileset.FLOOR;
+                            case "grass" -> nextGen[x][y] = Tileset.GRASS;
+                            case "water" -> nextGen[x][y] = Tileset.WATER;
+                            case "flower" -> nextGen[x][y] = Tileset.FLOWER;
+                            case "locked door" -> nextGen[x][y] = Tileset.LOCKED_DOOR;
+                            case "unlocked door" -> nextGen[x][y] = Tileset.UNLOCKED_DOOR;
+                            case "sand" -> nextGen[x][y] = Tileset.SAND;
+                            case "mountain" -> nextGen[x][y] = Tileset.MOUNTAIN;
+                            case "tree" -> nextGen[x][y] = Tileset.TREE;
+                            case "cell" -> nextGen[x][y] = Tileset.CELL;
+                            default -> nextGen[x][y] = Tileset.NOTHING;
+                        }
+                    }
+                }
+                liveCounts = 0;
             }
         }
-
-
-
-
         // TODO: Returns the next evolution in TETile[][] nextGen.
-        return null;
+        return nextGen;
     }
 
     /**
@@ -284,18 +314,29 @@ public class GameOfLife {
     public void saveBoard() {
         // TODO: Save the dimensions of the board into the first line of the file.
         // TODO: The width and height should be separated by a space, and end with "\n".
-
-
+        int state;
+        String content = Integer.toString(this.currentState.length) + " "
+                + Integer.toString(this.currentState[0].length) + "\n";
 
         // TODO: Save the current state of the board into save.txt. You should
         // TODO: use the provided FileUtils functions to help you. Make sure
         // TODO: the orientation is correct! Each line in the board should
         // TODO: end with a new line character.
-
-
-
-
-
+        for (int y = this.currentState[0].length - 1; y >= 0 ; y--) {
+            for (int x = 0; x < this.currentState.length; x++) {
+                if (!Objects.equals(this.currentState[x][y].description(), "nothing")) {
+                    state = 1;
+                } else {
+                    state = 0;
+                }
+                if (x < this.currentState.length - 1) {
+                    content = content + Integer.toString(state);
+                } else {
+                    content = content  + Integer.toString(state) + "\n";
+                }
+            }
+        }
+        FileUtils.writeFile(SAVE_FILE,content);
     }
 
     /**
@@ -303,6 +344,14 @@ public class GameOfLife {
      * 0 represents NOTHING, 1 represents a CELL.
      */
     public TETile[][] loadBoard(String filename) {
+        int width = 0, height = 0;
+        String contents, nextLine;
+        String[] lines = new String[];
+        if (FileUtils.fileExists(filename)) {
+            contents = FileUtils.readFile(filename);
+            lines = contents.split("\n");
+        }
+        width = Integer.parseInt(lines[0].split(" "));
         // TODO: Read in the file.
 
         // TODO: Split the file based on the new line character.
@@ -316,12 +365,24 @@ public class GameOfLife {
         // TODO: Load the state of the board from the given filename. You can
         // TODO: use the provided builder variable to help you and FileUtils
         // TODO: functions. Make sure the orientation is correct!
-
-
-
+        TETile[][] loadedTile = new TETile[width][height];
+        int state;
+        int i;
+        for (int x = 0; x < width; x++) {
+            i = 0;
+            nextLine = lines[x];
+            for (int y = height -1; y >= 0; y--) {
+                state = nextLine.charAt(i);
+                if (state == 0) {
+                    loadedTile[x][y] = Tileset.NOTHING;
+                } else {
+                    loadedTile[x][y] = Tileset.CELL;
+                }
+            }
+        }
 
         // TODO: Return the board you loaded. Replace/delete this line.
-        return null;
+        return loadedTile;
     }
 
     /**
