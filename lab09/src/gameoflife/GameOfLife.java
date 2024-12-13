@@ -344,14 +344,17 @@ public class GameOfLife {
      * 0 represents NOTHING, 1 represents a CELL.
      */
     public TETile[][] loadBoard(String filename) {
-        int width = 0, height = 0;
         String contents, nextLine;
-        String[] lines = new String[];
+        String[] lines, firstLine;
         if (FileUtils.fileExists(filename)) {
             contents = FileUtils.readFile(filename);
             lines = contents.split("\n");
+        } else {
+            lines = null;
         }
-        width = Integer.parseInt(lines[0].split(" "));
+        firstLine = lines[0].split(" ");
+        width = Integer.parseInt(firstLine[0]);
+        height = Integer.parseInt(firstLine[1]);
         // TODO: Read in the file.
 
         // TODO: Split the file based on the new line character.
@@ -366,18 +369,19 @@ public class GameOfLife {
         // TODO: use the provided builder variable to help you and FileUtils
         // TODO: functions. Make sure the orientation is correct!
         TETile[][] loadedTile = new TETile[width][height];
-        int state;
+        char state;
         int i;
         for (int x = 0; x < width; x++) {
+            nextLine = lines[x + 1];
             i = 0;
-            nextLine = lines[x];
             for (int y = height -1; y >= 0; y--) {
                 state = nextLine.charAt(i);
-                if (state == 0) {
+                if (state == '0') {
                     loadedTile[x][y] = Tileset.NOTHING;
                 } else {
                     loadedTile[x][y] = Tileset.CELL;
                 }
+                i++;
             }
         }
 
