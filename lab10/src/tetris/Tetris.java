@@ -116,7 +116,13 @@ public class Tetris {
      */
     private void incrementScore(int linesCleared) {
         // TODO: Increment the score based on the number of lines cleared.
-
+        switch (linesCleared) {
+            case 1 -> score += 100;
+            case 2 -> score += 300;
+            case 3 -> score += 500;
+            case 4 -> score += 800;
+            default -> score += 0;
+        }
     }
 
     /**
@@ -127,8 +133,21 @@ public class Tetris {
     public void clearLines(TETile[][] tiles) {
         // Keeps track of the current number lines cleared
         int linesCleared = 0;
+        boolean lineFilled = true;
 
         // TODO: Check how many lines have been completed and clear it the rows if completed.
+        for (int x = 0; x < tiles.length; x++) {
+            for (int y = 0; y < tiles[0].length; y++) {
+                if (Objects.equals(tiles[x][y].description(), "nothing")) {
+                    lineFilled = false;
+                    break;
+                }
+            }
+            if (lineFilled == true) {
+
+            }
+            lineFilled = true;
+        }
 
         // TODO: Increment the score based on the number of lines cleared.
 
