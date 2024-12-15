@@ -133,24 +133,40 @@ public class Tetris {
     public void clearLines(TETile[][] tiles) {
         // Keeps track of the current number lines cleared
         int linesCleared = 0;
-        boolean lineFilled = true;
+        boolean isLineFilled = true;
+        List<Integer> linesFilled = new ArrayList<>(); // record which lines are cleared
 
         // TODO: Check how many lines have been completed and clear it the rows if completed.
         for (int x = 0; x < tiles.length; x++) {
             for (int y = 0; y < tiles[0].length; y++) {
                 if (Objects.equals(tiles[x][y].description(), "nothing")) {
-                    lineFilled = false;
+                    isLineFilled = false;
                     break;
                 }
             }
-            if (lineFilled == true) {
-
+            if (isLineFilled == true) {
+                linesFilled.add(x);
+                linesCleared++;
             }
-            lineFilled = true;
+            isLineFilled = true;
         }
-
+        //
+        int upperBound;
+        for (int i = 0; i < linesCleared; i++ ) {
+            if (i == linesCleared - 1) {
+                upperBound = tiles[0].length;
+            } else {
+                upperBound = linesFilled.get(i+1);
+            }
+            for (int x = linesFilled.get(i); x < upperBound; x++) {
+                for (int y = 0; y < tiles[0].length; y++) {
+                    tiles[x][y] = tiles[x+1][y];
+                }
+            }
+        }
+        //
         // TODO: Increment the score based on the number of lines cleared.
-
+        incrementScore(linesCleared);
         fillAux();
     }
 
@@ -160,11 +176,16 @@ public class Tetris {
      */
     public void runGame() {
         resetActionTimer();
+        isGameOver = false;
 
         // TODO: Set up your game loop. The game should keep running until the game is over.
         // Use helper methods inside your game loop, according to the spec description.
-
-
+        while(isGameOver == false) {
+            spawnPiece();
+            updateBoard();
+            clearLines(this.board);
+            renderBoard();
+        }
     }
 
     /**
