@@ -103,6 +103,7 @@ public class Tetris {
                 case 'd' -> movement.tryMove(1, 0);
                 case 'q' -> movement.rotate(Movement.Rotation.LEFT);
                 case 'w' -> movement.rotate(Movement.Rotation.RIGHT);
+                //default -> movement.tryMove(0, -1);
             }
         }
 
@@ -133,41 +134,49 @@ public class Tetris {
     public void clearLines(TETile[][] tiles) {
         // Keeps track of the current number lines cleared
         int linesCleared = 0;
-        boolean isLineFilled = true;
         List<Integer> linesFilled = new ArrayList<>(); // record which lines are cleared
 
         // TODO: Check how many lines have been completed and clear it the rows if completed.
-        for (int x = 0; x < tiles.length; x++) {
-            for (int y = 0; y < tiles[0].length; y++) {
-                if (Objects.equals(tiles[x][y].description(), "nothing")) {
+        linesFilled = linesFilled(tiles);
+        incrementScore(linesFilled.size());
+        //
+        int upperBound;
+        while (!linesFilled.isEmpty()) {
+            for (int i = 0; i < linesFilled.size(); i++ ) {
+                if (i == linesFilled.size() - 1) {
+                    upperBound = tiles[0].length - 1;
+                } else {
+                    upperBound = linesFilled.get(i+1);
+                }
+                for (int y = linesFilled.get(i); y < upperBound; y++) {
+                    for (int x = 0; x < tiles.length; x++) {
+                        tiles[x][y] = tiles[x][y+1];
+                    }
+                }
+            }
+            linesFilled = linesFilled(tiles);
+        }
+        //
+        // TODO: Increment the score based on the number of lines cleared.
+        fillAux();
+    }
+
+    private List<Integer> linesFilled(TETile[][] tiles) {
+        List<Integer> linesFilled = new ArrayList<>();
+        boolean isLineFilled = true;
+        for (int y = 0; y < tiles[0].length; y++) {
+            for (int x = 0; x < tiles.length; x++) {
+                if (tiles[x][y].id() == 3) {
                     isLineFilled = false;
                     break;
                 }
             }
             if (isLineFilled == true) {
-                linesFilled.add(x);
-                linesCleared++;
+                linesFilled.add(y);
             }
             isLineFilled = true;
         }
-        //
-        int upperBound;
-        for (int i = 0; i < linesCleared; i++ ) {
-            if (i == linesCleared - 1) {
-                upperBound = tiles[0].length;
-            } else {
-                upperBound = linesFilled.get(i+1);
-            }
-            for (int x = linesFilled.get(i); x < upperBound; x++) {
-                for (int y = 0; y < tiles[0].length; y++) {
-                    tiles[x][y] = tiles[x+1][y];
-                }
-            }
-        }
-        //
-        // TODO: Increment the score based on the number of lines cleared.
-        incrementScore(linesCleared);
-        fillAux();
+        return linesFilled;
     }
 
     /**
@@ -182,8 +191,13 @@ public class Tetris {
         // Use helper methods inside your game loop, according to the spec description.
         while(isGameOver == false) {
             spawnPiece();
-            updateBoard();
-            clearLines(this.board);
+            Tetromino t = currentTetromino;
+            while (t != null) {
+                updateBoard();
+                renderBoard();
+                t = currentTetromino;
+            }
+            clearLines(board);
             renderBoard();
         }
     }
@@ -193,7 +207,8 @@ public class Tetris {
      */
     private void renderScore() {
         // TODO: Use the StdDraw library to draw out the score.
-
+        StdDraw.setPenColor(255, 255, 255);
+        StdDraw.text(7, 19, "Score: " + String.valueOf(score));
     }
 
     /**
